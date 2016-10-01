@@ -14,36 +14,15 @@
 
 #include "msc_xml.h"
 
-// Documentation: http://xmlsoft.org/xmlio.html#entities
-static xmlExternalEntityLoader defaultLoader = NULL;
-
-static xmlParserInputPtr xmlMyExternalEntityLoader(const char *URL, const char *ID, xmlParserCtxtPtr ctxt) {
-    //fprintf(stderr, "xmlMyExternalEntityLoader: URL: %s, ID: %s\n", URL, ID);
-    
-    if (defaultLoader != NULL) {
-        return defaultLoader(URL, ID, ctxt);
-    }
-    
-    return NULL;
-}
-
 /**
  * Initialise XML parser.
  */
 int xml_init(modsec_rec *msr, char **error_msg) {
-    xmlParserInputBufferCreateFilenameFunc entity;
-
     if (error_msg == NULL) return -1;
     *error_msg = NULL;
 
     msr->xml = apr_pcalloc(msr->mp, sizeof(xml_data));
     if (msr->xml == NULL) return -1;
-
-    // XXX This should be done only once properly, not like this.
-    if (defaultLoader != NULL) {
-        defaultLoader = xmlGetExternalEntityLoader();
-        xmlSetExternalEntityLoader(xmlMyExternalEntityLoader);
-    }
 
     return 1;
 }
@@ -99,16 +78,10 @@ int xml_process_chunk(modsec_rec *msr, const char *buf, unsigned int size, char 
             return -1;
         }
         
-        if (msr->txcfg->xml_external_entity == 0) {        
-            // The point of the following is to make sure that certain dangerous
-            // options are not set. We must never use XML_PARSE_NOENT and XML_PARSE_DTDLOAD.
-            // Further, we disable network access, because it's just wrong for our use case.
-            xmlCtxtUseOptions(msr->xml->parsing_ctx, XML_PARSE_NONET);
-        } else {
-            // Dangerous and should be removed as configuration option. Including here
-            // only to avoid breaking backward compatibility.
-            xmlCtxtUseOptions(msr->xml->parsing_ctx, XML_PARSE_NOENT | XML_PARSE_NONET);
-        }
+        // The point of the following is to make sure that certain dangerous
+        // options are not set. We must never use XML_PARSE_NOENT and XML_PARSE_DTDLOAD.
+        // Further, we disable network access, because it's just wrong for our use case.
+        xmlCtxtUseOptions(msr->xml->parsing_ctx, XML_PARSE_NONET);
     }
 
     xmlParseChunk(msr->xml->parsing_ctx, buf, size, 0);

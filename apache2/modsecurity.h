@@ -633,9 +633,6 @@ struct directory_config {
     int                 crypto_hash_iframesrc_pm;
     int                 crypto_hash_framesrc_pm;
 
-    /* xml */
-    int                 xml_external_entity;
-
     /* This will be used whenever ModSecurity will be ready
      * to ask the server for newer rules.
      */
