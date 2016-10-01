@@ -18,6 +18,7 @@
 typedef struct xml_data xml_data;
 
 #include "modsecurity.h"
+#include <libxml/xmlIO.h>
 #include <libxml/xmlschemas.h>
 #include <libxml/xpath.h>
 

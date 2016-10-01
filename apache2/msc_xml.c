@@ -14,11 +14,18 @@
 
 #include "msc_xml.h"
 
-static xmlParserInputBufferPtr
-xml_unload_external_entity(const char *URI, xmlCharEncoding enc)    {
+// Documentation: http://xmlsoft.org/xmlio.html#entities
+static xmlExternalEntityLoader defaultLoader = NULL;
+
+static xmlParserInputPtr xmlMyExternalEntityLoader(const char *URL, const char *ID, xmlParserCtxtPtr ctxt) {
+    //fprintf(stderr, "xmlMyExternalEntityLoader: URL: %s, ID: %s\n", URL, ID);
+    
+    if (defaultLoader != NULL) {
+        return defaultLoader(URL, ID, ctxt);
+    }
+    
     return NULL;
 }
-
 
 /**
  * Initialise XML parser.
@@ -32,8 +39,10 @@ int xml_init(modsec_rec *msr, char **error_msg) {
     msr->xml = apr_pcalloc(msr->mp, sizeof(xml_data));
     if (msr->xml == NULL) return -1;
 
-    if(msr->txcfg->xml_external_entity == 0)    {
-        entity = xmlParserInputBufferCreateFilenameDefault(xml_unload_external_entity);
+    // XXX This should be done only once properly, not like this.
+    if (defaultLoader != NULL) {
+        defaultLoader = xmlGetExternalEntityLoader();
+        xmlSetExternalEntityLoader(xmlMyExternalEntityLoader);
     }
 
     return 1;
@@ -83,25 +92,33 @@ int xml_process_chunk(modsec_rec *msr, const char *buf, unsigned int size, char 
             buf, size, "body.xml");
 
         */
-
-        msr->xml->parsing_ctx = xmlCreatePushParserCtxt(NULL, NULL, buf, size, "body.xml");
+        
+        msr->xml->parsing_ctx = xmlCreatePushParserCtxt(NULL, NULL, NULL, 0, "body.xml");
         if (msr->xml->parsing_ctx == NULL) {
             *error_msg = apr_psprintf(msr->mp, "XML: Failed to create parsing context.");
             return -1;
         }
-    } else {
-
-        /* Not a first invocation. */
-
-        xmlParseChunk(msr->xml->parsing_ctx, buf, size, 0);
-        if (msr->xml->parsing_ctx->wellFormed != 1) {
-            *error_msg = apr_psprintf(msr->mp, "XML: Failed parsing document.");
-            return -1;
+        
+        if (msr->txcfg->xml_external_entity == 0) {        
+            // The point of the following is to make sure that certain dangerous
+            // options are not set. We must never use XML_PARSE_NOENT and XML_PARSE_DTDLOAD.
+            // Further, we disable network access, because it's just wrong for our use case.
+            xmlCtxtUseOptions(msr->xml->parsing_ctx, XML_PARSE_NONET);
+        } else {
+            // Dangerous and should be removed as configuration option. Including here
+            // only to avoid breaking backward compatibility.
+            xmlCtxtUseOptions(msr->xml->parsing_ctx, XML_PARSE_NOENT | XML_PARSE_NONET);
         }
     }
 
+    xmlParseChunk(msr->xml->parsing_ctx, buf, size, 0);
+    if (msr->xml->parsing_ctx->wellFormed != 1) {
+        *error_msg = apr_psprintf(msr->mp, "XML: Failed parsing document.");
+        return -1;
+    }
+
     return 1;
-}
+}        
 
 /**
  * Finalise XML parsing.
