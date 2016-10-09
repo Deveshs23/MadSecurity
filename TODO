@@ -23,8 +23,6 @@ To remove:
 
  - skip
 
- - JSON audit logging
-
  - SecGuardianLog
 
 
@@ -48,12 +46,16 @@ Areas of interest:
 
  - JSON parsing implementation not consistent with how XML is done. For better or worse?
 
+ - JSON audit logging; maybe keep, but make compatible with mlogc?
+
 
 Small improvements:
 
  - Automating request processor activation as default; option to switch to manual
 
  - SecDefaultAction only allowed to specify blocking actions; rules must specify phase
+
+   - Change directive name?
 
  - Not clear if IDs should remain mandatory; maybe only for rule sets
 
