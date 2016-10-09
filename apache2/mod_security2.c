@@ -834,34 +834,6 @@ static int hook_request_early(request_rec *r) {
     msr = create_tx_context(r);
     if (msr == NULL) return DECLINED;
 
-#ifdef REQUEST_EARLY
-
-    /* Are we allowed to continue? */
-    if (msr->txcfg->is_enabled == MODSEC_DISABLED) {
-        if (msr->txcfg->debuglog_level >= 4) {
-            msr_log(msr, 4, "Processing disabled, skipping (hook request_early).");
-        }
-        return DECLINED;
-    }
-
-    /* Process phase REQUEST_HEADERS */
-    if (modsecurity_process_phase(msr, PHASE_REQUEST_HEADERS) > 0) {
-        rc = perform_interception(msr);
-    }
-
-    if (    (msr->txcfg->is_enabled != MODSEC_DISABLED)
-            && (msr->txcfg->reqbody_access == 1)
-            && (rc == DECLINED))
-    {
-        /* Check request body limit (non-chunked requests only). */
-        if (msr->request_content_length > msr->txcfg->reqbody_limit) {
-            msr_log(msr, 1, "Request body (Content-Length) is larger than the "
-                    "configured limit (%ld).", msr->txcfg->reqbody_limit);
-            if(msr->txcfg->is_enabled != MODSEC_DETECTION_ONLY && msr->txcfg->if_limit_action != REQUEST_BODY_LIMIT_ACTION_PARTIAL)
-                return HTTP_REQUEST_ENTITY_TOO_LARGE;
-        }
-    }
-#endif
     return rc;
 }
 
@@ -925,7 +897,6 @@ static int hook_request_late(request_rec *r) {
         return DECLINED;
     }
 
-#ifndef REQUEST_EARLY
     /* Phase 1 */
     if (msr->txcfg->debuglog_level >= 4) {
         msr_log(msr, 4, "First phase starting (dcfg %pp).", msr->dcfg2);
@@ -940,7 +911,6 @@ static int hook_request_late(request_rec *r) {
             return rc;
         }
     }
-#endif
 
     /* The rule engine could have been disabled in phase 1. */
     if (msr->txcfg->is_enabled == MODSEC_DISABLED) {
