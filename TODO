@@ -1,0 +1,70 @@
+
+To remove:
+
+ - SecStatusEngine
+
+ - SecCacheTransformations
+
+ - SecChrootDir, SecServerSignature
+
+ - SecConnEngine, SecConnReadStateLimit, SecConnWriteStateLimit, SecReadStateLimit, SecWriteStateLimit
+
+ - SecGsbLookupDb and @gsbLookup
+
+ - SecHashEngine, SecHashKey, SecHashMethodPm, SecHashMethodRx, SecHashParam; @validateHash; ctl:hashEnforcement; ctl:hashEngine
+
+ - SecRemoteRules, SecRemoteRulesFailAction
+
+ - SecStreamInBodyInspection, SecStreamOutBodyInspection; @rsub; STREAM_INPUT_BODY, STREAM_OUTPUT_BODY
+
+ - SecHttpBlKey and @rbl
+
+ - pause
+
+ - skip
+
+ - JSON audit logging
+
+ - SecGuardianLog
+
+
+Areas of interest:
+
+ - SecInterceptOnError: no need for a special-purpose directive, mechanism
+   for all similar situations? Review all similar situations.
+
+ - SecTmpSaveUploadedFiles???
+
+ - Actions deprecatevar and expirevar are inconsistently implemented; generally,
+   persistent storage is too low level and difficult to use
+
+ - Some of the multipart flags don't make sense or produce FPs
+
+ - TX:MSC_.*
+
+ - Part J is a mess.
+
+ - Nginx and IIS ports; are they worth keeping?
+
+
+Small improvements:
+
+ - Automating request processor activation as default; option to switch to manual
+
+ - SecDefaultAction only allowed to specify blocking actions; rules must specify phase
+
+ - Not clear if IDs should remain mandatory; maybe only for rule sets
+
+ - Sane limits for SecPcreMatchLimit and SecPcreMatchLimitRecursion
+
+ - All rules that have the same targets and tfns reuse work (caching)
+
+ - Lua modules (scripts that handle multiple phases); remove SecRuleScript?
+
+ - Stay with Lua 5.1 for the JIT?
+
+ - @lua (or @script) operator
+
+ - Is PCRE JIT used by default?
+
+ - Allow only a subset of directives/features in rule sets
