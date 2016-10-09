@@ -46,6 +46,8 @@ Areas of interest:
 
  - Nginx and IIS ports; are they worth keeping?
 
+ - JSON parsing implementation not consistent with how XML is done. For better or worse?
+
 
 Small improvements:
 
