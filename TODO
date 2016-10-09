@@ -72,3 +72,5 @@ Small improvements:
  - Is PCRE JIT used by default?
 
  - Allow only a subset of directives/features in rule sets
+
+ - Location matching is prone to evasion; maybe add a special variable to use?
