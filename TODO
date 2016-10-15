@@ -74,3 +74,7 @@ Small improvements:
  - Allow only a subset of directives/features in rule sets
 
  - Location matching is prone to evasion; maybe add a special variable to use?
+
+ - setvar:IP=1 silently fails
+
+ - Don't allow rules to manipulate collection variables prefixed with __.
