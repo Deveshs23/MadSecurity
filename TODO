@@ -78,3 +78,7 @@ Small improvements:
  - setvar:IP=1 silently fails
 
  - Don't allow rules to manipulate collection variables prefixed with __.
+
+Bugs:
+
+ - https://github.com/SpiderLabs/ModSecurity/pull/1224
