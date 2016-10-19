@@ -28,6 +28,8 @@ To remove:
 
 Areas of interest:
 
+ - If proxy doesn't work in phases 3+, say so when starting up. Not at runtime.
+
  - SecInterceptOnError: no need for a special-purpose directive, mechanism
    for all similar situations? Review all similar situations.
 
