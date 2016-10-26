@@ -53,6 +53,15 @@ Areas of interest:
 
 Small improvements:
 
+ - Heavily normalised REQUEST_URI variable that can be used without thinking
+   about evasion (much).
+
+ - In proxy mode, knowing what type of system is in the backend could be useful; for
+   example, if it's IIS, you know it's case-sensitive, etc. So having some sort
+   of backend behaviour modelling could be interesting. Also, ModSecurity should
+   parse and re-create the request URI before passing it onto the proxy. That
+   would ensure that it understood whatever it sent to the backend.
+
  - Automating request processor activation as default; option to switch to manual
 
  - SecDefaultAction only allowed to specify blocking actions; rules must specify phase
@@ -60,6 +69,8 @@ Small improvements:
    - Change directive name?
 
  - Not clear if IDs should remain mandatory; maybe only for rule sets
+
+ - In fact, allow only a subset of directives/features in rule sets
 
  - Sane limits for SecPcreMatchLimit and SecPcreMatchLimitRecursion
 
@@ -73,13 +84,11 @@ Small improvements:
 
  - Is PCRE JIT used by default?
 
- - Allow only a subset of directives/features in rule sets
-
  - Location matching is prone to evasion; maybe add a special variable to use?
 
  - setvar:IP=1 silently fails
 
- - Don't allow rules to manipulate collection variables prefixed with __.
+ - Don't allow rules to manipulate collection variables prefixed with __
 
 Bugs:
 
