@@ -56,6 +56,9 @@ Small improvements:
  - Heavily normalised REQUEST_URI variable that can be used without thinking
    about evasion (much).
 
+ - Need variable CONTENT_TYPE; ModSecurity should parse and normalize the C-T header,
+   ignore the semicolon if any, and produce a value that can be safely used in rules.
+
  - In proxy mode, knowing what type of system is in the backend could be useful; for
    example, if it's IIS, you know it's case-sensitive, etc. So having some sort
    of backend behaviour modelling could be interesting. Also, ModSecurity should
