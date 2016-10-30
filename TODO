@@ -53,6 +53,9 @@ Areas of interest:
 
 Small improvements:
 
+ - ModSecurity should be able to fully control output (response body) when
+   intercepting transactions (not force users to rely on ErrorDocument, which can be problematic).
+
  - Heavily normalised REQUEST_URI variable that can be used without thinking
    about evasion (much).
 
