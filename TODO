@@ -62,6 +62,8 @@ Small improvements:
 
  - Why does the GLOBAL collection need to be initialised?
 
+ - We need a way to specify permanent collections, from which records are not deleted.
+
  - ModSecurity should be able to fully control output (response body) when
    intercepting transactions (not force users to rely on ErrorDocument, which can be problematic).
 
@@ -110,3 +112,5 @@ Small improvements:
 Bugs:
 
  - https://github.com/SpiderLabs/ModSecurity/pull/1224
+
+ - Incorrect log message "Ctl: Set requestBodyAccess to %d." when ctl:forceRequestBodyVariable is used.
