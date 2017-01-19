@@ -114,3 +114,7 @@ Bugs:
  - https://github.com/SpiderLabs/ModSecurity/pull/1224
 
  - Incorrect log message "Ctl: Set requestBodyAccess to %d." when ctl:forceRequestBodyVariable is used.
+
+ - ctl:forceRequestBodyVariable is weird. If you set XML parsing and it goes without error, you don't
+   get REQUEST_BODY. If there's an XML parsing error, you do. Request body buffering shouldn't be
+   coupled with body processing.
