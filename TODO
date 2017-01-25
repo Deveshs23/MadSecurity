@@ -109,6 +109,12 @@ Small improvements:
 
  - Check: allow:phase allowed only on phase 1 and 2 rules.
 
+ - It's not possible to reinitialise a collection. This is necessary for session collections to
+   handle cases when the session ID is rotated. Maybe keep all session data, just change the ID?
+
+ - Tracking sessions is currently fidly. ModSecurity should be able to do it directly after being
+   told what's the name of the cookie that carries IDs.
+
 Bugs:
 
  - https://github.com/SpiderLabs/ModSecurity/pull/1224
